@@ -1,37 +1,23 @@
-#!/usr/bin/env python3
+#!/bin/env python3
+import random
 
-from common import Point
-from map import Map
-from graph import Graph
+NUM_ANTS = 200
+k = 20
+d = 2
+R_m = 0
+L_m = 0
+len_right = 1
+len_left = 1
 
-DATA_FILE = "data/4.txt"
+for _ in range(NUM_ANTS):
+    p_r = (R_m + k) ** d / ((R_m + k) ** d + (L_m + k) ** d)
+    p_l = 1 - p_r
+    p_r /= len_right
+    p_l /= len_left
+    p_r, p_l = p_r / (p_r + p_l), p_l / (p_r + p_l)
+    if random.random() < p_r:
+        R_m += 1
+    else:
+        L_m += 1
 
-
-def load_data() -> list[Point]:
-    with open(DATA_FILE, "r") as file:
-        raw = file.read()
-    x = ""
-    y = ""
-    res: list[Point] = list()
-    for line in raw.splitlines():
-        if line.startswith("x = ["):
-            x = line[5:-2].strip()
-        elif line.startswith("y = ["):
-            y = line[5:-2].strip()
-    x_values = [float(val) for val in x.split(" ")]
-    y_values = [float(val) for val in y.split(" ")]
-    for i in range(len(x_values)):
-        res.append((x_values[i], y_values[i]))
-    return res
-
-
-map = Map(load_data())
-graph = Graph(map)
-
-
-def main():
-    graph.render()
-
-
-if __name__ == "__main__":
-    main()
+print(f"R_m: {R_m}, L_m: {L_m}")
