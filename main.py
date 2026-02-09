@@ -1,36 +1,26 @@
-#!/usr/bin/env python3
+#!/bin/env python3
+import random
 
-from common import Point
-from map import Map
-from graph import Graph
-
-DATA_FILE = "data/4.txt"
+NUM_ANTS = 200
 
 
-def load_data() -> list[Point]:
-    with open(DATA_FILE, "r") as file:
-        raw = file.read()
-    x = ""
-    y = ""
-    res: list[Point] = list()
-    for line in raw.splitlines():
-        if line.startswith("x = ["):
-            x = line[5:-2].strip()
-        elif line.startswith("y = ["):
-            y = line[5:-2].strip()
-    x_values = [float(val) for val in x.split(" ")]
-    y_values = [float(val) for val in y.split(" ")]
-    for i in range(len(x_values)):
-        res.append((x_values[i], y_values[i]))
-    return res
-
-
-map = Map(load_data())
-graph = Graph(map)
+def choose_bridge(R_m: int, L_m: int):
+    k = 20
+    d = 2
+    return (R_m + k) ** d / ((R_m + k) ** d + (L_m + k) ** d)
 
 
 def main():
-    graph.render()
+    R_m = 0
+    L_m = 0
+
+    for _ in range(NUM_ANTS):
+        if random.random() <= choose_bridge(R_m, L_m):
+            L_m += 1
+        else:
+            R_m += 1
+
+    print(f"R_m: {R_m}, L_m: {L_m}")
 
 
 if __name__ == "__main__":
